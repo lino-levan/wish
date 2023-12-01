@@ -1,4 +1,6 @@
+use std::env;
 use std::io::Write;
+use std::path::Path;
 
 mod ext;
 use ext::rust::do_rust;
@@ -32,8 +34,19 @@ fn main() {
         }
 
         // Check for built-in commands
-        if input_vec[0] == "exit" {
-            break 'shell_loop;
+        match input_vec[0] {
+            "cd" => {
+                if input_vec.len() == 1 {
+                    env::set_current_dir(Path::new(&env::var("HOME").unwrap())).unwrap();
+                } else {
+                    env::set_current_dir(Path::new(input_vec[1])).unwrap();
+                }
+                continue 'shell_loop;
+            }
+            "exit" => {
+                break 'shell_loop;
+            }
+            _ => {}
         }
 
         // Check if binary exists in path
