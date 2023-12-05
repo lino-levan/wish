@@ -36,10 +36,13 @@ fn main() {
         // Check for built-in commands
         match input_vec[0] {
             "cd" => {
-                if input_vec.len() == 1 {
-                    env::set_current_dir(Path::new(&env::var("HOME").unwrap())).unwrap();
-                } else {
-                    env::set_current_dir(Path::new(input_vec[1])).unwrap();
+                let result = match input_vec.len() {
+                    1 => env::set_current_dir(Path::new(&env::var("HOME").unwrap())),
+                    _ => env::set_current_dir(Path::new(input_vec[1])),
+                };
+                match result {
+                    Ok(_) => {}
+                    Err(_) => println!("cd: no such file or directory: {}", input_vec[1]),
                 }
                 continue 'shell_loop;
             }
